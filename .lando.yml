@@ -1,0 +1,40 @@
+# Configuration for running this site locally with lando.
+#
+# Setup: Change the PROJECTNAME, PANTHEON_SITE_ID, and PANTHEON_SITE_MACHINE_NAME values below.
+#
+# Additional documentation: https://docs.lando.dev/config/pantheon.html
+
+name: PROJECTNAME
+recipe: pantheon
+config:
+  # Set the pantheon site id, which is in the format: your-site-name
+  id: PANTHEON_SITE_ID
+  # Copy the machine id from the url of your pantheon site dashboard, which is in the format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+  site: PANTHEON_SITE_MACHINE_NAME
+  # We are using drupal 8 with a nested docroot.
+  framework: drupal8
+  webroot: web
+  # Turning off solr, varnish, and redis with false will improve startup time.
+  index: false
+  edge: false
+  cache: false
+  # Use xdebug to interface with your IDE.
+  xdebug: true
+
+# Add node and phpmyadmin as services.
+services:
+  node:
+    type: node
+    build:
+      - "cd $LANDO_MOUNT && npm it"
+  pma:
+    type: phpmyadmin
+
+# Allows you to run commands like `lando gulp watch` from your command line instead of SSHing into the environment.
+tooling:
+  npm:
+    service: node
+  node:
+    service: node
+  gulp:
+    service: node
